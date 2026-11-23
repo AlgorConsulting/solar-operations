@@ -418,6 +418,7 @@ const CFG = {
   currency: 'INR',
   filterLayout: 'top',
   noindex: true,
+  website: 'https://www.algor-consulting.com/',
   asOf: {date: '31 Oct 2026', status: '31 Oct 2026 (FY 2026-27 to date)', refreshed: '01 Nov 2026, 06:00 IST'},
   notice: 'Sample dashboard · synthetic data, illustrative figures',
   dims: {r: {label: 'Site', all: 'All Sites', chip: 'All sites'}, b: {label: 'Line', plural: 'Lines', all: 'All Lines'},
@@ -963,6 +964,12 @@ function buildUI() {
   if (AS.refreshed) $('lastRefreshed').textContent = 'Last refreshed: ' + AS.refreshed;
   if (AS.status) $('asOfStatus').textContent = 'Data as of: ' + AS.status;
   if (CFG.notice) document.querySelectorAll('.t-note, .t-note-m').forEach(el => el.textContent = 'ⓘ  ' + CFG.notice);
+  if (CFG.website) {   // optional link to the ALGOR website: toolbar logo, a toolbar button and the status bar
+    const u = CFG.website, host = u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''), a = `href="${esc(u)}" target="_blank" rel="noopener"`;
+    const logo = document.querySelector('.t-toolbar-logo'); logo.outerHTML = `<a class="t-toolbar-logo" ${a} style="text-decoration:none">${logo.innerHTML}</a>`;
+    document.querySelector('.t-toolbar-right').insertAdjacentHTML('afterbegin', `<a class="t-btn t-btn-outline" ${a}>🌐 ${esc(host)}</a>`);
+    const sr = document.querySelector('.t-status-right'); sr.innerHTML = `<a ${a} style="color:inherit">${esc(host)}</a> · ` + sr.innerHTML;
+  }
   const top = CFG.filterLayout === 'top';
   const filters = `<div class="filter-block"><label class="filter-label" for="fFy">Financial Year</label><select class="filter-select" id="fFy">${fyOpts}</select></div>
     <div class="filter-block"><label class="filter-label" for="fPeriod">Period</label><select class="filter-select" id="fPeriod"></select></div>
