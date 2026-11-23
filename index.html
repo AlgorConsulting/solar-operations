@@ -419,6 +419,7 @@ const CFG = {
   filterLayout: 'top',
   noindex: true,
   website: 'https://www.algor-consulting.com/',
+  booking: 'https://calendar.app.google/xiyrXcRKc4dQfyF88',
   asOf: {date: '31 Oct 2026', status: '31 Oct 2026 (FY 2026-27 to date)', refreshed: '01 Nov 2026, 06:00 IST'},
   notice: 'Sample dashboard · synthetic data, illustrative figures',
   dims: {r: {label: 'Site', all: 'All Sites', chip: 'All sites'}, b: {label: 'Line', plural: 'Lines', all: 'All Lines'},
@@ -969,6 +970,12 @@ function buildUI() {
     const logo = document.querySelector('.t-toolbar-logo'); logo.outerHTML = `<a class="t-toolbar-logo" ${a} style="text-decoration:none">${logo.innerHTML}</a>`;
     document.querySelector('.t-toolbar-right').insertAdjacentHTML('afterbegin', `<a class="t-btn t-btn-outline" ${a}>🌐 ${esc(host)}</a>`);
     const sr = document.querySelector('.t-status-right'); sr.innerHTML = `<a ${a} style="color:inherit">${esc(host)}</a> · ` + sr.innerHTML;
+  }
+  if (CFG.booking) {   // optional calendar booking link: the right-hand CTA pill, a toolbar button and the status bar
+    const a = `href="${esc(CFG.booking)}" target="_blank" rel="noopener"`, ctas = document.querySelectorAll('.t-cta-bar .t-cta');
+    if (ctas.length > 1) ctas[ctas.length - 1].outerHTML = `<a class="t-cta" ${a}>📅 Book a 30-min call with us</a>`;
+    document.querySelector('.t-toolbar-right').insertAdjacentHTML('afterbegin', `<a class="t-btn t-btn-outline" ${a}>📅 Book a call</a>`);
+    const sr = document.querySelector('.t-status-right'); sr.innerHTML = `<a ${a} style="color:inherit">Book a call</a> · ` + sr.innerHTML;
   }
   const top = CFG.filterLayout === 'top';
   const filters = `<div class="filter-block"><label class="filter-label" for="fFy">Financial Year</label><select class="filter-select" id="fFy">${fyOpts}</select></div>

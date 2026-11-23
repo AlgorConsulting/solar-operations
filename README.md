@@ -1,6 +1,7 @@
 # Solar Module Manufacturing: Daily MIS & Operations Dashboard (Sample)
 
 Live: https://algorconsulting.github.io/solar-operations/
+Book a call: https://calendar.app.google/xiyrXcRKc4dQfyF88
 Demo video (1 min): https://algorconsulting.github.io/solar-operations/demo/
 
 A representational sample built by ALGOR Consulting Group (https://www.algor-consulting.com/). All production, quality, downtime, inventory and dispatch figures are synthetic and illustrative; no client data is used.
