@@ -209,6 +209,52 @@ svg.chart-svg{width:100%;overflow:visible;display:block}
 }
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
+.md-open{margin-top:8px;align-self:flex-start;background:#8B0000;color:#fff;border:0;border-radius:999px;padding:5px 12px;font-weight:700;font-size:10.5px;letter-spacing:.04em;cursor:pointer}
+.md-open:hover{background:#A50F0F}
+.md-wrap{position:fixed;inset:0;background:rgba(20,20,22,.38);z-index:900;display:none}
+.md-wrap.open{display:block}
+.md-panel{position:absolute;top:0;right:0;bottom:0;width:min(560px,100%);background:#fff;box-shadow:-18px 0 40px rgba(0,0,0,.25);overflow-y:auto;padding:14px 22px 26px;color:#2B2D31}
+.md-bar-top{display:flex;justify-content:space-between;align-items:center}
+.md-x{border:0;background:none;font-size:26px;line-height:1;cursor:pointer;color:#555}
+.md-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-top:10px}
+.md-label{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7280}
+.md-val{font-size:30px;font-weight:700;color:#8B0000;margin-top:2px}
+.md-delta{font-size:14px;font-weight:700;margin-left:6px}
+.md-delta.up,.md-bc.up{color:#2E8B57}
+.md-delta.down,.md-bc.down{color:#C0392B}
+.md-per{font-size:12px;color:#6B7280}
+.md-follow{border:1.5px solid #8B0000;color:#8B0000;background:#fff;border-radius:999px;padding:7px 14px;font-weight:700;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.md-follow.on{background:#8B0000;color:#fff}
+.md-seg{display:flex;gap:4px;background:#F1F2F4;border-radius:8px;padding:3px;margin:14px 0 4px}
+.md-seg button{flex:1;border:0;background:none;border-radius:6px;padding:6px 8px;font-size:12px;font-weight:600;color:#4B5058;cursor:pointer}
+.md-seg button.on{background:#fff;color:#8B0000;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.md-h{font-size:13px;font-weight:700;margin:16px 0 8px;color:#2B2D31}
+.md-h span{font-weight:400;color:#6B7280;margin-left:6px;font-size:12px}
+.md-h .md-on{color:#2E8B57;font-weight:700}
+.md-ins{list-style:none;display:flex;flex-direction:column;gap:8px;padding:0;margin:0}
+.md-card{display:flex;gap:10px;border:1px solid #E6E7EA;border-left:4px solid #9AA0A6;border-radius:8px;padding:10px 12px}
+.md-card.t-good{border-left-color:#2E8B57}
+.md-card.t-bad{border-left-color:#C0392B}
+.md-card.t-warn{border-left-color:#B8860B}
+.md-card.t-info{border-left-color:#2E6FA8}
+.md-ic{font-size:18px;line-height:1.2;width:22px;text-align:center}
+.md-k{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8A9099}
+.md-head{font-size:14px;font-weight:700;margin:1px 0 2px}
+.md-txt{font-size:12.5px;color:#4B5058;line-height:1.45}
+.md-bars{display:flex;flex-direction:column;gap:6px}
+.md-bar{display:grid;grid-template-columns:150px 1fr 86px 44px;gap:8px;align-items:center;font-size:12px}
+.md-bn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.md-bt{height:9px;background:#F1F2F4;border-radius:5px;overflow:hidden}
+.md-bt i{display:block;height:100%;background:#B22222;border-radius:5px}
+.md-bv{text-align:right;font-weight:600}
+.md-bc{text-align:right;font-weight:700}
+.md-mail{border:1px solid #E6E7EA;border-radius:10px;padding:12px 14px;background:#FAFAFB;font-size:12.5px}
+.md-mh{color:#6B7280;font-size:11.5px}
+.md-ms{font-weight:700;font-size:14px;margin:4px 0 6px}
+.md-mail ul{margin:0 0 6px 18px}
+.md-mf{color:#8B0000;font-weight:700;font-size:12px}
+@media(max-width:560px){.md-bar{grid-template-columns:100px 1fr 70px 40px}}
+
 .kpi-6{grid-template-columns:repeat(6,1fr)}
 @media(max-width:1200px){.kpi-6{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:900px){.kpi-6{grid-template-columns:repeat(2,1fr)}}
@@ -414,6 +460,7 @@ const CFG = {
   docTitle: 'Solar Module Manufacturing — Daily MIS & Operations Dashboard (Sample) | Algor Analytics',
   filePrefix: 'ALGOR-Solar-Ops',
   loading: 'Loading shift logs, EL results, stoppages and stock positions…',
+  metricDetail: true,
   sourceSystems: 'MES (lines, EL & IV tests) + ERP (stores, dispatch) + maintenance log',
   currency: 'INR',
   filterLayout: 'top',
@@ -938,7 +985,7 @@ function card(w, inner) {
 function widgetHTML(w) {
   switch (w.type) {
     case 'kpi': return `<div class="kpi-box" data-metric="${esc(w.metric || w.label.toLowerCase())}"><div class="kpi-label">${esc(w.label)}</div><div class="kpi-value ${w.color || ''}" id="${w.id}v">—</div><div class="kpi-delta" id="${w.id}d"></div><div class="kpi-sub" id="${w.id}s"></div><div class="kpi-icon">${w.icon || '📊'}</div></div>`;
-    case 'pulse': return `<div class="kpi-box kpi-pulse" data-metric="${esc(w.metric || w.label.toLowerCase())}"><div class="pulse-head"><div class="kpi-label">${esc(w.label)}</div><span class="pulse-badge">◉ Tableau Pulse AI Generated Metric</span></div><div class="pulse-value-row"><div class="kpi-value cyan" id="${w.id}v">—</div><span class="pulse-delta" id="${w.id}d"></span><span class="pulse-prior" id="${w.id}p"></span></div><svg class="chart-svg" id="${w.id}g" viewBox="0 0 460 66" xmlns="http://www.w3.org/2000/svg" style="margin-top:6px"></svg><div class="pulse-legend" id="${w.id}l"></div><div class="pulse-insight" id="${w.id}i"></div></div>`;
+    case 'pulse': return `<div class="kpi-box kpi-pulse" data-metric="${esc(w.metric || w.label.toLowerCase())}"><div class="pulse-head"><div class="kpi-label">${esc(w.label)}</div><span class="pulse-badge">◉ AI-generated insight</span></div><div class="pulse-value-row"><div class="kpi-value cyan" id="${w.id}v">—</div><span class="pulse-delta" id="${w.id}d"></span><span class="pulse-prior" id="${w.id}p"></span></div><svg class="chart-svg" id="${w.id}g" viewBox="0 0 460 66" xmlns="http://www.w3.org/2000/svg" style="margin-top:6px"></svg><div class="pulse-legend" id="${w.id}l"></div><div class="pulse-insight" id="${w.id}i"></div>${CFG.metricDetail ? `<button class="md-open" type="button" onclick="mdOpen('${w.id}')">✦ Explore this metric ›</button>` : ''}</div>`;
     case 'line': return card(w, `<div class="legend-row" id="${w.id}l"></div><svg class="chart-svg" id="${w.id}g" viewBox="0 0 460 190" xmlns="http://www.w3.org/2000/svg"></svg>`);
     case 'bars': return card(w, `<div class="bar-chart" id="${w.id}g" style="height:${w.height || 190}px"></div>`);
     case 'hbars': return card(w, `<div style="margin-top:8px" id="${w.id}g"></div>`);
@@ -1075,6 +1122,79 @@ function renderFilterBar(f) {
 }
 
 // ── value & delta helpers ────────────────────────────────
+
+// ── metric detail (optional, CFG.metricDetail): a pulse-style panel for the headline metric — follow it, read ranked
+//    automatic insights (change, drivers, unusual months, target, concentration), break it down, and preview the digest ─────
+const MD = {id: null, range: 'ytd', dim: null, follow: false};
+function mdCtx() {
+  const r = X.r, m1 = r.m1, m0 = MD.range === 'm' ? m1 : MD.range === 'q' ? Math.max(r.m0, m1 - 2) : r.m0;
+  return {cur: makeCtx(X.f, m0, m1), pri: X.pri && m0 - 12 >= 0 ? makeCtx(X.f, m0 - 12, m1 - 12) : null, m0, m1};
+}
+function mdInsights(w, C) {
+  const F = fmtOf(w.fmt || 'money'), noun = w.noun || w.label.toLowerCase(), Noun = noun[0].toUpperCase() + noun.slice(1), out = [];
+  const v = ctx => ctx ? w.v(ctx.t(w.cube), ctx, X) : NaN, c = v(C.cur), p = v(C.pri);
+  const per = C.m0 === C.m1 ? monthName(C.m1) : monthName(C.m0) + ' – ' + monthName(C.m1);
+  if (ok(p) && p) { const g = (c - p) / p * 100; out.push({k: 'Period change', ic: g >= 0 ? '↗' : '↘', tone: g >= 0 ? 'good' : 'bad', head: `${Noun} ${g >= 0 ? 'up' : 'down'} ${Math.abs(g).toFixed(1)}%`,
+    body: `${F(c)} in ${per}, against ${F(p)} a year earlier (${g >= 0 ? '+' : '−'}${F(Math.abs(c - p))}).`}); }
+  // drivers: which store / category / channel added or removed the most
+  const C0 = CUBES[w.cube], dims = ['b', 'c', 's'].filter(d => C0[d]), con = [];
+  if (C.pri) dims.forEach(d => { const a = C.cur.by(w.cube, d), b = C.pri.by(w.cube, d);
+    a.forEach((t, i) => { const dv = w.v(t, C.cur, X) - w.v(b[i], C.pri, X); if (ok(dv) && dv) con.push({d, i, dv, name: d === 'b' ? META.branches[i].name : d === 'c' ? META.cats[i] : META.segs[i]}); }); });
+  const tot = ok(p) ? c - p : 0, lbl = d => CFG.dims[d].label.toLowerCase();
+  if (con.length && tot) {
+    const pos = con.filter(x => Math.sign(x.dv) === Math.sign(tot)).sort((a, b) => Math.abs(b.dv) - Math.abs(a.dv));
+    const neg = con.filter(x => Math.sign(x.dv) !== Math.sign(tot)).sort((a, b) => Math.abs(b.dv) - Math.abs(a.dv));
+    const nx = pos.filter(x => x.d === (pos[0] || {}).d)[1];
+    if (pos[0]) out.push({k: 'Top driver', ic: '★', tone: 'info', head: `${esc(pos[0].name)} ${tot > 0 ? 'added' : 'lost'} the most`,
+      body: `The ${lbl(pos[0].d)} ${esc(pos[0].name)} accounts for ${F(Math.abs(pos[0].dv))} of the ${F(Math.abs(tot))} change${nx ? `; next is ${esc(nx.name)} (${F(Math.abs(nx.dv))})` : ''}.`});
+    if (neg[0]) out.push({k: 'Going the other way', ic: '⚑', tone: 'bad', head: `${esc(neg[0].name)} moved against the trend`,
+      body: `The ${lbl(neg[0].d)} ${esc(neg[0].name)} is ${neg[0].dv < 0 ? 'down' : 'up'} ${F(Math.abs(neg[0].dv))} on last year while the total ${tot > 0 ? 'grew' : 'fell'}.`});
+  }
+  // unusual month: the year-on-year change furthest from the period's usual pace
+  if (C.pri && C.m1 - C.m0 >= 2) {
+    const a = C.cur.mon(w.cube).map(t => w.v(t, C.cur, X)), b = C.pri.mon(w.cube).map(t => w.v(t, C.pri, X));
+    const g = a.map((x, i) => b[i] ? (x - b[i]) / b[i] * 100 : NaN);
+    const gv = g.filter(ok);
+    if (gv.length >= 3) {
+      const mean = gv.reduce((s, x) => s + x, 0) / gv.length, sd = Math.sqrt(gv.reduce((s, x) => s + (x - mean) ** 2, 0) / gv.length) || 1;
+      let bi = -1; g.forEach((x, i) => { if (ok(x) && (bi < 0 || Math.abs(x - mean) > Math.abs(g[bi] - mean))) bi = i; });
+      if (bi >= 0 && Math.abs(g[bi] - mean) > Math.max(1.5 * sd, 6)) out.push({k: 'Unusual change', ic: '⚡', tone: 'warn', head: `${monthName(C.m0 + bi)} broke the pattern`,
+        body: `${Noun} ${g[bi] >= 0 ? 'rose' : 'fell'} ${Math.abs(g[bi]).toFixed(1)}% year on year that month, against a usual ${mean.toFixed(1)}%.`});
+    }
+  }
+  // target
+  if (w.budget && !budgetBlocked(w.budget.cube).length) { const bt = w.budget.v(C.cur.t(w.budget.cube)); if (bt) { const a = c / bt * 100;
+    out.push({k: 'Target', ic: '◎', tone: a >= 100 ? 'good' : a >= 95 ? 'warn' : 'bad', head: `${a.toFixed(1)}% of budget`, body: `${F(c)} against a budget of ${F(bt)} for ${per}: ${a >= 100 ? 'ahead by ' + F(c - bt) : 'short by ' + F(bt - c)}.`}); } }
+  // concentration
+  if (w.share && X.f.seg < 0) { const r = C.cur.by(w.cube, w.share.by).map((t, i) => [i, w.v(t, C.cur, X)]).filter(x => ok(x[1])).sort((a, b) => b[1] - a[1]), sm = r.reduce((s, x) => s + x[1], 0);
+    const nm = i => w.share.by === 'c' ? META.cats[i] : w.share.by === 'b' ? META.branches[i].name : META.segs[i];
+    if (r.length > 1 && sm) out.push({k: 'Concentration', ic: '◔', tone: 'info', head: `${esc(nm(r[0][0]))} is ${(r[0][1] / sm * 100).toFixed(0)}% of the total`, body: `The largest ${esc(w.share.noun)}, followed by ${esc(nm(r[1][0]))} at ${(r[1][1] / sm * 100).toFixed(0)}%.`}); }
+  return {out, c, p, F, per};
+}
+function mdRender() {
+  const w = WID.find(x => x.id === MD.id); if (!w) return;
+  const C = mdCtx(), I = mdInsights(w, C), dims = ['b', 'c', 's'].filter(d => CUBES[w.cube][d]);
+  if (!MD.dim || !dims.includes(MD.dim)) MD.dim = dims[0];
+  const a = C.cur.by(w.cube, MD.dim), b = C.pri ? C.pri.by(w.cube, MD.dim) : null;
+  const rows = a.map((t, i) => ({i, v: w.v(t, C.cur, X), p: b ? w.v(b[i], C.pri, X) : NaN})).filter(r => ok(r.v) && r.v).sort((x, y) => y.v - x.v).slice(0, 8), mx = Math.max(...rows.map(r => r.v), 1);
+  const nm = (d, i) => d === 'b' ? META.branches[i].name : d === 'c' ? META.cats[i] : META.segs[i];
+  const g = ok(I.p) && I.p ? (I.c - I.p) / I.p * 100 : NaN;
+  $('mdBody').innerHTML = `
+    <div class="md-top"><div><div class="md-label">${esc(w.label)}</div><div class="md-val">${ok(I.c) ? I.F(I.c) : '—'} ${ok(g) ? `<span class="md-delta ${g >= 0 ? 'up' : 'down'}">${g >= 0 ? '▲' : '▼'} ${Math.abs(g).toFixed(1)}%</span>` : ''}</div>
+      <div class="md-per">${esc(I.per)}${segLabel(X.f) ? ' · ' + esc(segLabel(X.f)) : ''} · vs same period last year</div></div>
+      <button class="md-follow ${MD.follow ? 'on' : ''}" type="button" onclick="MD.follow=!MD.follow;mdRender()">${MD.follow ? '★ Following' : '☆ Follow'}</button></div>
+    <div class="md-seg" role="tablist">${[['m', 'Last month'], ['q', 'Last 3 months'], ['ytd', 'Period to date']].map(([k, l]) => `<button type="button" class="${MD.range === k ? 'on' : ''}" onclick="MD.range='${k}';mdRender()">${l}</button>`).join('')}</div>
+    <div class="md-h">Insights, ranked <span>written automatically from the data</span></div>
+    <ol class="md-ins">${I.out.map((x, n) => `<li class="md-card t-${x.tone}"><div class="md-ic">${x.ic}</div><div><div class="md-k">${n + 1} · ${esc(x.k)}</div><div class="md-head">${x.head}</div><div class="md-txt">${x.body}</div></div></li>`).join('') || '<li class="md-card">No insights for this selection.</li>'}</ol>
+    <div class="md-h">Breakdown</div>
+    <div class="md-seg small">${dims.map(d => `<button type="button" class="${MD.dim === d ? 'on' : ''}" onclick="MD.dim='${d}';mdRender()">By ${esc(CFG.dims[d].label.toLowerCase())}</button>`).join('')}</div>
+    <div class="md-bars">${rows.map(r => { const ch = ok(r.p) && r.p ? (r.v - r.p) / r.p * 100 : NaN; return `<div class="md-bar"><span class="md-bn">${esc(nm(MD.dim, r.i))}</span><span class="md-bt"><i style="width:${(r.v / mx * 100).toFixed(1)}%"></i></span><span class="md-bv">${I.F(r.v)}</span><span class="md-bc ${ch >= 0 ? 'up' : 'down'}">${ok(ch) ? (ch >= 0 ? '+' : '−') + Math.abs(ch).toFixed(0) + '%' : ''}</span></div>`; }).join('')}</div>
+    <div class="md-h">Your digest ${MD.follow ? '<span class="md-on">✓ Subscribed · every Monday 08:00</span>' : '<span>Follow the metric to get this every Monday</span>'}</div>
+    <div class="md-mail"><div class="md-mh"><b>ALGOR Analytics</b> · Weekly metric digest</div><div class="md-ms">${esc(w.label)}: ${ok(I.c) ? I.F(I.c) : '—'}${ok(g) ? ` (${g >= 0 ? '+' : '−'}${Math.abs(g).toFixed(1)}%)` : ''}</div>
+      <ul>${I.out.slice(0, 3).map(x => `<li>${x.head}</li>`).join('')}</ul><div class="md-mf">Open the dashboard for the detail ›</div></div>`;
+}
+function mdOpen(id) { MD.id = id; MD.range = 'ytd'; $('mdWrap').classList.add('open'); mdRender(); }
+function mdClose() { $('mdWrap').classList.remove('open'); }
 function val(w, ctx) { if (!ctx) return NaN; const t = w.cube ? ctx.t(w.cube) : null; return w.v(t, ctx, X); }
 function yoyDelta(c, p, goodDown) {
   if (!X.pri) return {t: 'No prior year in dataset', c: 'muted'};
@@ -1489,5 +1609,6 @@ window.__totals = (cube, fl = {}) => { const f = Object.assign({fy: META.fySelec
 
 boot().catch(err => { console.error(err); $('loading').innerHTML = '<div style="color:#C0392B;font-weight:600">Could not load dashboard data</div><div style="font-size:11px">' + esc(err.message) + '. Please use a recent version of Chrome, Edge, Safari or Firefox.</div>'; });
 </script>
+<div id="mdWrap" class="md-wrap" onclick="if(event.target===this)mdClose()"><aside class="md-panel" role="dialog" aria-label="Metric details"><div class="md-bar-top"><span class="pulse-badge">◉ AI-generated insight</span><button class="md-x" type="button" onclick="mdClose()" aria-label="Close">×</button></div><div id="mdBody"></div></aside></div>
 </body>
 </html>
